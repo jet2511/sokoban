@@ -37,6 +37,7 @@ export interface LevelData {
   width: number;
   height: number;
   parSteps: number; // Target steps for 3 stars
+  author?: string;
 }
 
 export interface LevelProgress {
