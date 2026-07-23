@@ -1,0 +1,328 @@
+:root {
+  --bg-color: #121824;
+  --panel-bg: #1e2638;
+  --panel-border: #3b4866;
+  --text-main: #f0f4fc;
+  --text-gold: #ffcc00;
+  --primary-btn: #2b7fff;
+  --primary-btn-hover: #4691ff;
+  --danger-btn: #e63946;
+  --danger-btn-hover: #f0525f;
+  --font-retro: 'Silkscreen', 'Press Start 2P', monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  font-family: var(--font-retro);
+  overflow: hidden;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Retro Header Overlay */
+#game-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  background-color: var(--panel-bg);
+  border-bottom: 4px solid var(--panel-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 20;
+}
+
+.header-left, .header-center, .header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pixel-badge {
+  background: #0f141d;
+  color: var(--text-gold);
+  padding: 6px 12px;
+  border: 2px solid var(--panel-border);
+  border-radius: 4px;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+.stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #0f141d;
+  padding: 4px 10px;
+  border: 2px solid var(--panel-border);
+  border-radius: 4px;
+}
+
+.stat-label {
+  font-size: 0.6rem;
+  color: #8fa0c0;
+}
+
+.stat-value {
+  font-size: 0.9rem;
+  color: #64ffda;
+  font-weight: bold;
+}
+
+/* Buttons */
+.retro-btn {
+  font-family: var(--font-retro);
+  font-size: 0.8rem;
+  padding: 8px 14px;
+  background-color: var(--panel-bg);
+  color: var(--text-main);
+  border: 3px solid var(--panel-border);
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--panel-border);
+  transition: all 0.1s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.retro-btn:hover {
+  background-color: #2a354d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 var(--panel-border);
+}
+
+.retro-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--panel-border);
+}
+
+.retro-btn.btn-small {
+  padding: 6px 10px;
+  font-size: 0.75rem;
+}
+
+.retro-btn.btn-primary {
+  background-color: var(--primary-btn);
+  border-color: #1a5ac7;
+  box-shadow: 0 4px 0 #1a5ac7;
+}
+
+.retro-btn.btn-primary:hover {
+  background-color: var(--primary-btn-hover);
+}
+
+.retro-btn.btn-danger {
+  background-color: var(--danger-btn);
+  border-color: #b02330;
+  box-shadow: 0 4px 0 #b02330;
+}
+
+.retro-btn.btn-danger:hover {
+  background-color: var(--danger-btn-hover);
+}
+
+/* Main Phaser Game Container - Perfect Centering */
+#game-container {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at center, #1b2436 0%, #0a0e17 100%);
+  overflow: hidden;
+}
+
+#phaser-game {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#phaser-game canvas {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  max-width: 100vw;
+  max-height: 100vh;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+  border: 4px solid var(--panel-border);
+  border-radius: 8px;
+  margin: auto !important;
+  display: block;
+}
+
+/* Action Bar Overlay */
+#game-controls-overlay {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+}
+
+.action-bar {
+  display: flex;
+  gap: 12px;
+  background: rgba(30, 38, 56, 0.85);
+  backdrop-filter: blur(8px);
+  padding: 10px 18px;
+  border-radius: 12px;
+  border: 2px solid var(--panel-border);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* D-Pad for Mobile Touch */
+#dpad-overlay {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  z-index: 35;
+}
+
+.dpad-container {
+  display: grid;
+  grid-template-columns: repeat(3, 46px);
+  grid-template-rows: repeat(3, 46px);
+  gap: 4px;
+}
+
+.dpad-btn {
+  background: rgba(43, 56, 84, 0.9);
+  border: 2px solid var(--panel-border);
+  color: white;
+  font-size: 1.2rem;
+  font-family: var(--font-retro);
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 0 #151c2b;
+}
+
+.dpad-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #151c2b;
+  background: #4691ff;
+}
+
+.dpad-up { grid-column: 2; grid-row: 1; }
+.dpad-left { grid-column: 1; grid-row: 2; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+.dpad-down { grid-column: 2; grid-row: 3; }
+
+/* Modal Win Dialog */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 14, 0.85);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-card {
+  background: var(--panel-bg);
+  border: 4px solid var(--panel-border);
+  border-radius: 12px;
+  padding: 30px;
+  width: 90%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.8);
+  animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.win-title {
+  color: var(--text-gold);
+  font-size: 1.1rem;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.star-rating {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.star {
+  color: #4a5773;
+  margin: 0 4px;
+}
+
+.star.lit {
+  color: var(--text-gold);
+  text-shadow: 0 0 12px rgba(255, 204, 0, 0.8);
+}
+
+.win-stats {
+  font-size: 0.8rem;
+  color: #c4d4f2;
+  line-height: 1.8;
+  margin-bottom: 24px;
+}
+
+.win-stats strong {
+  color: #64ffda;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+/* Media Queries */
+@media (max-width: 600px) {
+  #game-header {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 8px;
+  }
+  .stat-box {
+    padding: 2px 6px;
+  }
+  .stat-label {
+    font-size: 0.5rem;
+  }
+  .stat-value {
+    font-size: 0.75rem;
+  }
+  .retro-btn {
+    font-size: 0.7rem;
+    padding: 6px 10px;
+  }
+}

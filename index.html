@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Sokoban Classic Warehouse - Retro Pixel Edition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Retro Header & Status Bar (HTML Overlay) -->
+    <header id="game-header" class="hidden">
+      <div class="header-left">
+        <button id="btn-back" class="retro-btn btn-small" title="Quay lại Menu">
+          <span class="icon">◀</span> MENU
+        </button>
+        <span id="level-title" class="pixel-badge">CHAPTER 1 - LEVEL 1</span>
+      </div>
+      <div class="header-center">
+        <div class="stat-box">
+          <span class="stat-label">BƯỚC (STEPS)</span>
+          <span id="stat-steps" class="stat-value">0</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">THỜI GIAN</span>
+          <span id="stat-time" class="stat-value">00:00</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label">THÙNG VÀO ĐÍCH</span>
+          <span id="stat-boxes" class="stat-value">0/0</span>
+        </div>
+      </div>
+      <div class="header-right">
+        <button id="btn-sound" class="retro-btn btn-small" title="Bật/Tắt Âm Thanh">
+          <span id="sound-icon">🔊</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Game Container -->
+    <main id="game-container">
+      <div id="phaser-game"></div>
+
+      <!-- Action Buttons Overlay -->
+      <div id="game-controls-overlay" class="hidden">
+        <div class="action-bar">
+          <button id="btn-undo" class="retro-btn" title="Hoàn tác bước đi (Ctrl+Z)">
+            ↩ UNDO (<span id="undo-count">0</span>)
+          </button>
+          <button id="btn-redo" class="retro-btn" title="Làm lại bước đi (Ctrl+Y)">
+            ↪ REDO (<span id="redo-count">0</span>)
+          </button>
+          <button id="btn-reset" class="retro-btn btn-danger" title="Chơi lại màn này (R)">
+            🔄 RESET
+          </button>
+        </div>
+      </div>
+
+      <!-- Mobile D-Pad Touch Overlay -->
+      <div id="dpad-overlay" class="hidden">
+        <div class="dpad-container">
+          <button id="dpad-up" class="dpad-btn dpad-up">▲</button>
+          <button id="dpad-left" class="dpad-btn dpad-left">◄</button>
+          <button id="dpad-right" class="dpad-btn dpad-right">►</button>
+          <button id="dpad-down" class="dpad-btn dpad-down">▼</button>
+        </div>
+      </div>
+    </main>
+
+    <!-- Modal Win Dialog -->
+    <div id="modal-win" class="modal-backdrop hidden">
+      <div class="modal-card retro-box">
+        <h2 class="win-title">✨ THẮNG MÀN CHƠI! ✨</h2>
+        <div class="star-rating" id="win-stars">
+          <span class="star lit">★</span>
+          <span class="star lit">★</span>
+          <span class="star lit">★</span>
+        </div>
+        <div class="win-stats">
+          <p>Số bước thực hiện: <strong id="win-steps">0</strong> (Best: <span id="win-best-steps">0</span>)</p>
+          <p>Thời gian hoàn thành: <strong id="win-time">00:00</strong></p>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-restart-win" class="retro-btn">🔄 Đấu Lại</button>
+          <button id="btn-next-level" class="retro-btn btn-primary">⏩ Màn Kế Tiếp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>
