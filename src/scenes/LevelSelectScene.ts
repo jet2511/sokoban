@@ -7,6 +7,8 @@ import { LevelData, GameMode } from '../domain/types';
 export class LevelSelectScene extends Phaser.Scene {
   private soundSynth = RetroSoundSynthesizer.getInstance();
   private currentTab: number = 1; // Chapter 1, 2, 3 or 4 (Custom)
+  private currentPage: number = 1;
+  private itemsPerPage: number = 10; // 5 cols x 2 rows
   private contentContainer: Phaser.GameObjects.Container | null = null;
 
   constructor() {
@@ -45,7 +47,7 @@ export class LevelSelectScene extends Phaser.Scene {
     // Chapter Tabs
     this.createTabs();
 
-    // Render levels for current tab
+    // Render levels for current tab & page
     this.renderLevelGrid();
   }
 
@@ -91,7 +93,8 @@ export class LevelSelectScene extends Phaser.Scene {
         if (this.currentTab !== tab.id) {
           this.soundSynth.playClick();
           this.currentTab = tab.id;
-          this.scene.restart();
+          this.currentPage = 1;
+          this.renderLevelGrid();
         }
       });
     });
@@ -105,15 +108,15 @@ export class LevelSelectScene extends Phaser.Scene {
     }
     this.contentContainer = this.add.container(0, 0);
 
-    let levelsToDisplay: LevelData[] = [];
+    let allLevels: LevelData[] = [];
 
     if (this.currentTab <= 3) {
-      levelsToDisplay = DEFAULT_LEVELS.filter(l => l.chapter === this.currentTab);
+      allLevels = DEFAULT_LEVELS.filter(l => l.chapter === this.currentTab);
     } else {
-      levelsToDisplay = LevelStorageRepository.getCustomLevels();
+      allLevels = LevelStorageRepository.getCustomLevels();
     }
 
-    if (levelsToDisplay.length === 0 && this.currentTab === 4) {
+    if (allLevels.length === 0 && this.currentTab === 4) {
       const emptyText = this.add.text(width / 2, height / 2 + 20, 
         'Chưa có màn chơi tự tạo nào!\nHãy vào TRÌNH TẠO MÀN để tự thiết kế nhé.', {
         fontFamily: 'Silkscreen, monospace',
@@ -125,16 +128,25 @@ export class LevelSelectScene extends Phaser.Scene {
       return;
     }
 
+    const totalPages = Math.max(1, Math.ceil(allLevels.length / this.itemsPerPage));
+    if (this.currentPage > totalPages) {
+      this.currentPage = totalPages;
+    }
+
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const pageLevels = allLevels.slice(startIndex, startIndex + this.itemsPerPage);
+
     const cardWidth = 135;
     const cardHeight = 100;
-    const cols = Math.min(5, Math.floor((width - 40) / (cardWidth + 15)));
+    const cols = 5;
     const gridWidth = cols * (cardWidth + 15) - 15;
     const startX = width / 2 - gridWidth / 2 + cardWidth / 2;
-    const startY = 190; // Fixed spacing: clear gap below tab row
+    const startY = 160;
 
-    levelsToDisplay.forEach((level, idx) => {
-      const col = idx % cols;
-      const row = Math.floor(idx / cols);
+    pageLevels.forEach((level, pageIdx) => {
+      const globalIdx = startIndex + pageIdx;
+      const col = pageIdx % cols;
+      const row = Math.floor(pageIdx / cols);
 
       const x = startX + col * (cardWidth + 15);
       const y = startY + row * (cardHeight + 15);
@@ -154,14 +166,14 @@ export class LevelSelectScene extends Phaser.Scene {
 
       if (!isUnlocked) {
         const lockText = this.add.text(0, -10, '🔒', { fontSize: '20px' }).setOrigin(0.5);
-        const nameText = this.add.text(0, 22, `MÀN ${idx + 1}`, {
+        const nameText = this.add.text(0, 22, `MÀN ${globalIdx + 1}`, {
           fontFamily: 'Silkscreen, monospace',
           fontSize: '10px',
           color: '#556688'
         }).setOrigin(0.5);
         cardContainer.add([lockText, nameText]);
       } else {
-        const numText = this.add.text(0, -22, `${level.chapter ? level.chapter + '-' + (idx + 1) : idx + 1}`, {
+        const numText = this.add.text(0, -22, `${level.chapter ? level.chapter + '-' + (globalIdx + 1) : globalIdx + 1}`, {
           fontFamily: 'Silkscreen, monospace',
           fontSize: '15px',
           color: '#ffd700'
@@ -198,5 +210,46 @@ export class LevelSelectScene extends Phaser.Scene {
 
       this.contentContainer!.add(cardContainer);
     });
+
+    // Render Pagination Controls if totalPages > 1
+    if (totalPages > 1) {
+      const paginationY = startY + 2 * (cardHeight + 15) + 30;
+      
+      const prevBtn = this.add.text(width / 2 - 100, paginationY, '◀ TRANG TRƯỚC', {
+        fontFamily: 'Silkscreen, monospace',
+        fontSize: '12px',
+        color: this.currentPage > 1 ? '#64ffda' : '#3b4866'
+      }).setOrigin(0.5).setInteractive({ useHandCursor: this.currentPage > 1 });
+
+      if (this.currentPage > 1) {
+        prevBtn.on('pointerdown', () => {
+          this.soundSynth.playClick();
+          this.currentPage--;
+          this.renderLevelGrid();
+        });
+      }
+
+      const pageText = this.add.text(width / 2, paginationY, `${this.currentPage} / ${totalPages}`, {
+        fontFamily: 'Silkscreen, monospace',
+        fontSize: '13px',
+        color: '#ffffff'
+      }).setOrigin(0.5);
+
+      const nextBtn = this.add.text(width / 2 + 100, paginationY, 'TRANG SAU ▶', {
+        fontFamily: 'Silkscreen, monospace',
+        fontSize: '12px',
+        color: this.currentPage < totalPages ? '#64ffda' : '#3b4866'
+      }).setOrigin(0.5).setInteractive({ useHandCursor: this.currentPage < totalPages });
+
+      if (this.currentPage < totalPages) {
+        nextBtn.on('pointerdown', () => {
+          this.soundSynth.playClick();
+          this.currentPage++;
+          this.renderLevelGrid();
+        });
+      }
+
+      this.contentContainer.add([prevBtn, pageText, nextBtn]);
+    }
   }
 }

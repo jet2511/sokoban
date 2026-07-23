@@ -19,11 +19,12 @@ export class LevelStorageRepository {
     if (map[levelId]) {
       return map[levelId];
     }
-    // Default progress for level 1 (unlocked by default)
-    const isFirstLevel = levelId === 'lvl_c1_1';
+    // Default progress for the first level of each chapter (unlocked by default)
+    const firstLevelIds = ['mb_01', 'mb_13', 'mb_25', 'lvl_c1_1', 'lvl_c2_1', 'lvl_c3_1'];
+    const isUnlockedByDefault = firstLevelIds.includes(levelId);
     return {
       levelId,
-      unlocked: isFirstLevel,
+      unlocked: isUnlockedByDefault,
       completed: false,
       bestSteps: null,
       bestTime: null,
