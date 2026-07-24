@@ -3,6 +3,7 @@ import { TileType, LevelData, GameMode } from '../domain/types';
 import { XsbLevelParser } from '../parser/XsbLevelParser';
 import { LevelStorageRepository } from '../repository/LevelStorageRepository';
 import { RetroSoundSynthesizer } from '../audio/RetroSoundSynthesizer';
+import { RetroToast } from '../ui/RetroToast';
 
 export class EditorScene extends Phaser.Scene {
   private soundSynth = RetroSoundSynthesizer.getInstance();
@@ -225,16 +226,16 @@ export class EditorScene extends Phaser.Scene {
         const customLevel = this.buildCustomLevelData();
         LevelStorageRepository.saveCustomLevel(customLevel);
         this.soundSynth.playWin();
-        alert('✅ Đã lưu màn chơi tự tạo vào danh sách!');
+        RetroToast.show('✅ Đã lưu màn chơi tự tạo vào danh sách!', 'success');
       }
     });
 
     this.createActionButton(width / 2 + 160, btnY, '📋 XUẤT MÃ XSB', '#ffd700', () => {
       const xsb = XsbLevelParser.serialize(this.grid);
       navigator.clipboard.writeText(xsb).then(() => {
-        alert('📋 Đã sao chép mã XSB vào bộ nhớ tạm (Clipboard):\n\n' + xsb);
+        RetroToast.show('📋 Đã sao chép mã XSB vào Clipboard!', 'success');
       }).catch(() => {
-        alert('Mã XSB:\n\n' + xsb);
+        RetroToast.show('Mã XSB: ' + xsb.substring(0, 30) + '...', 'info');
       });
     });
   }
@@ -283,15 +284,15 @@ export class EditorScene extends Phaser.Scene {
     }
 
     if (playerCount !== 1) {
-      alert('⚠️ Màn chơi phải có chính xác 1 Nhân Vật (@)!');
+      RetroToast.show('⚠️ Màn chơi phải có chính xác 1 Nhân Vật (@)!', 'warning');
       return false;
     }
     if (boxCount === 0 || targetCount === 0) {
-      alert('⚠️ Màn chơi phải có ít nhất 1 Thùng ($) và 1 Đích (.));');
+      RetroToast.show('⚠️ Màn chơi phải có ít nhất 1 Thùng ($) và 1 Đích (.)!', 'warning');
       return false;
     }
     if (boxCount !== targetCount) {
-      alert(`⚠️ Số thùng (${boxCount}) phải bằng số vị trí đích (${targetCount})!`);
+      RetroToast.show(`⚠️ Số thùng (${boxCount}) phải bằng số vị trí đích (${targetCount})!`, 'warning');
       return false;
     }
 

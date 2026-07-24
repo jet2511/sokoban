@@ -305,6 +305,56 @@ body, html {
   gap: 14px;
 }
 
+/* Retro Toast Notification */
+.toast-container {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.toast-badge {
+  background: var(--panel-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-family: var(--font-retro);
+  font-size: 0.8rem;
+  color: var(--text-main);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  animation: toastSlideDown 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.toast-badge.toast-success {
+  border-color: #00e676;
+  color: #00e676;
+}
+
+.toast-badge.toast-warning {
+  border-color: #ffd700;
+  color: #ffd700;
+}
+
+.toast-badge.toast-error {
+  border-color: #e63946;
+  color: #f0525f;
+}
+
+.toast-badge.toast-info {
+  border-color: #64ffda;
+  color: #64ffda;
+}
+
+@keyframes toastSlideDown {
+  from { transform: translateY(-20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 /* Media Queries */
 @media (max-width: 600px) {
   #game-header {
