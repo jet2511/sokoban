@@ -303,6 +303,22 @@ export class GameScene extends Phaser.Scene {
         this.loadNextLevel();
       };
     }
+
+    // Register cleanup listener on scene shutdown / destroy to prevent memory leaks
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.cleanupHTMLOverlay());
+    this.events.once(Phaser.Scenes.Events.DESTROY, () => this.cleanupHTMLOverlay());
+  }
+
+  private cleanupHTMLOverlay() {
+    const elements = [
+      'btn-back', 'btn-sound', 'btn-undo', 'btn-redo', 'btn-reset',
+      'btn-restart-win', 'btn-next-level',
+      'dpad-up', 'dpad-down', 'dpad-left', 'dpad-right'
+    ];
+    elements.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.onclick = null;
+    });
   }
 
   private handleTileClick(tx: number, ty: number) {
@@ -451,7 +467,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     this.redoStack.push(action);
-    this.stepsCount++; // Undo counts as step
+    this.stepsCount = Math.max(0, this.stepsCount - 1); // Undo decrements step count
     this.updateHUD();
   }
 
